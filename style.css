@@ -27,6 +27,7 @@ body {
 #clock {
   width: 408px;
   height: 376px;
+  border-radius: 25px;
   display: flex;
   flex-direction: column;
   align-items: center;
