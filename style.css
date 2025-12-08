@@ -1,0 +1,99 @@
+* {
+  padding: 0;
+  margin: 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  width: 80vw;
+}
+
+#clock {
+  width: 408px;
+  height: 376px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+#clock.focus {
+  background-color: #fbebe9;
+}
+
+#timer {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 6rem;
+}
+
+#form {
+  margin-left: 40px;
+  display: flex;
+  border: 1px #e7e0da solid;
+  padding: 32px;
+  border-radius: 25px;
+  height: 410px;
+  width: 350px;
+  flex-direction: column;
+  align-items: start;
+}
+
+.space-2 {
+  margin-top: 24px;
+}
+
+.timeInput {
+  margin-top: 8px;
+  padding: 8px 12px 8px 12px;
+  width: 310px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px #e7e0da solid;
+}
+
+.timeInput:focus {
+  outline: 2px solid red;
+  outline-offset: 2px;
+}
+
+.subtext {
+  color: #8c7b73;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+#config {
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 28px;
+  display: block;
+}
+
+#tip {
+  font-size: 14px;
+  background-color: #f3f0ed;
+  padding: 15px;
+  border-radius: 15px;
+}
+
+#tipTitle {
+  font-weight: 600;
+}
+#tipContent {
+  margin-top: 5px;
+  color: #8b7c73;
+  width: 300px;
+  font-weight: 400;
+}
