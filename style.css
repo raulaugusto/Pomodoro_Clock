@@ -1,5 +1,7 @@
 :root {
   --focus-bg: #fbebe9;
+  --border-c: #e7e0da;
+  --hover-bg: #8b7c732d;
 }
 
 * {
@@ -10,12 +12,18 @@
 
 body {
   height: 100vh;
+  background-color: #fca5a6;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
+#title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 #content {
   display: flex;
   align-items: center;
@@ -55,12 +63,12 @@ body {
   justify-content: center;
   margin-right: 15px;
   background-color: #ef4343;
-  box-shadow: black;
+  box-shadow: 2px 3px 2px 1px rgb(177, 174, 174);
   color: white;
 }
 
 #startTimer:hover {
-  opacity: 0.8;
+  opacity: 0.7;
   transition: 0.25s;
 }
 
@@ -73,7 +81,19 @@ body {
 
 #resetTimer:hover {
   opacity: 1;
-  background-color: #8b7c732d;
+  background-color: var(--hover-bg);
+  transition: 0.25s;
+}
+
+#alternate {
+  background-color: #fdfcfc;
+  border: 1px solid var(--border-c);
+  border-radius: 10px;
+  width: 200px;
+  height: 40px;
+}
+#alternate:hover {
+  background-color: var(--hover-bg);
   transition: 0.25s;
 }
 
@@ -85,7 +105,8 @@ body {
 #form {
   margin-left: 40px;
   display: flex;
-  border: 1px #e7e0da solid;
+  border: 1px var(--border-c) solid;
+  background-color: #fdfcfc;
   padding: 32px;
   border-radius: 25px;
   height: 410px;
@@ -104,7 +125,7 @@ body {
   width: 310px;
   height: 30px;
   border-radius: 10px;
-  border: 1px #e7e0da solid;
+  border: 1px var(--border-c) solid;
 }
 
 .timeInput:focus {
