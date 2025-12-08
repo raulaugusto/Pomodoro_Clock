@@ -1,3 +1,7 @@
+:root {
+  --focus-bg: #fbebe9;
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -30,7 +34,46 @@ body {
 }
 
 #clock.focus {
-  background-color: #fbebe9;
+  background-color: var(--focus-bg);
+}
+
+#timerControlButtons {
+  display: flex;
+}
+
+#timerControlButtons button {
+  border: none;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+}
+
+#startTimer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  background-color: #ef4343;
+  box-shadow: black;
+  color: white;
+}
+
+#startTimer:hover {
+  opacity: 0.8;
+  transition: 0.25s;
+}
+
+#resetTimer {
+  align-items: center;
+  justify-content: center;
+  background-color: var(--focus-bg);
+  opacity: 0.6;
+}
+
+#resetTimer:hover {
+  opacity: 1;
+  background-color: #8b7c732d;
+  transition: 0.25s;
 }
 
 #timer {
