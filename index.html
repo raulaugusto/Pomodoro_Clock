@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="title"><h1>Pomodoro Clock</h1>
+    <p id="subtitle">Foque no que importa</p></div>
+    <div id="content">
+      <div class="container focus" id="clock">
+        <p id="badge" class="focus">Foco</p>
+        <h1 id="timer">25:00</h1>
+        <div id="timerControlButtons"><button id="startTimer"></button>
+        <button id="resetTimer"></button></div>
+        <button id="alternate">Mudar para descanso</button>
+      </div>
+      <div class="container" id="form">
+        <h2 id="config">Configurações</h3>
+        <div class="space-6">
+            <div class="space-2">
+                <label for="focus">Minutos de foco</label>
+                <input class="timeInput" type="number" name="focus" id="focus" value="25" /></div>
+                <p class="subtext">Tempo recomendado: 25 minutos</p>
+            <div class="space-2">
+                <label for="rest">Minutos de descanso</label>
+                <input class="timeInput" type="number" name="rest" id="rest" value="5" />
+                <p class="subtext">Tempo recomendado: 5 minutos</p>
+            </div>
+            <div class="space-2">
+                <div id="tip">
+                    <p id="tipTitle">
+                        Dica
+                    </p>
+                    <p id="tipContent">
+                        A técnica Pomodoro sugere 25 minutos de foco seguidos de 5 minutos de descanso.<br>
+                        Após 4 ciclos, faça uma pausa maior.
+                    </p>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
