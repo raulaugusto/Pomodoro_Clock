@@ -59,6 +59,7 @@ function evalTimerState() {
   switch (timerState) {
     case "stopped":
       startTimer(focusTimerValue);
+      updateButtonIcon("pause");
       timerState = "running";
       break;
     case "running":
@@ -66,14 +67,16 @@ function evalTimerState() {
         clearInterval(intervalId);
         intervalId = null;
         timerState = "paused";
+        updateButtonIcon("play");
         toggleInputDisabled(false);
       }
       break;
     case "paused":
       startTimer(remainingTime / 60000);
       timerState = "running";
+      updateButtonIcon("pause");
+      break;
   }
-  updateButtonIcon();
 }
 
 function startTimer(time) {
@@ -94,7 +97,7 @@ function startTimer(time) {
 function resetTimer() {
   clearInterval(intervalId);
   toggleInputDisabled(false);
-  updateButtonIcon();
+  updateButtonIcon("play");
   timerState = "stopped";
   intervalId = null;
   timer.innerText = generateFormatedTime(focusTimerValue);
@@ -105,7 +108,7 @@ function finishTimer() {
   intervalId = null;
   timerState = "stopped";
   console.log("finished");
-  updateButtonIcon();
+  updateButtonIcon("play");
   toggleInputDisabled(false);
 }
 
@@ -132,11 +135,19 @@ function showInputError(message, idSufix) {
   }
 }
 
-function updateButtonIcon() {
+function updateButtonIcon(icon) {
   const pauseIcon = document.getElementById("pause-button");
   const playIcon = document.getElementById("play-button");
-  pauseIcon.classList.toggle("hidden");
-  playIcon.classList.toggle("hidden");
+
+  if (icon === "play") {
+    pauseIcon.classList.add("hidden");
+    playIcon.classList.remove("hidden");
+    return;
+  }
+  if (icon === "pause") {
+    pauseIcon.classList.remove("hidden");
+    playIcon.classList.add("hidden");
+  }
 }
 
 function toggleInputDisabled(status) {
