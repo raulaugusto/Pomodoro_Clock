@@ -5,8 +5,9 @@ const startButton = document.getElementById("startTimer");
 const resetButton = document.getElementById("resetTimer");
 const alternateButton = document.getElementById("alternate");
 
-let focusTimerValue = 25;
+let focusTimerValue = 0.1;
 let restTimerValue = 5;
+let intervalId = null;
 
 focusTimeInput.addEventListener("focusout", () => {
   let timerValue = parseInt(focusTimeInput.value, 10);
@@ -14,7 +15,7 @@ focusTimeInput.addEventListener("focusout", () => {
   const min = 1;
   const max = 60;
 
-  if (isNaN(timerValue) || timerValue == undefined || timerValue == null) {
+  if (isNaN(timerValue)) {
     showInputError("Digite um número válido", "focus");
     return;
   }
@@ -25,13 +26,14 @@ focusTimeInput.addEventListener("focusout", () => {
   }
 
   if (timerValue < min) {
-    showInputError(`O valor mínimo é de ${max} minutos`, "focus");
+    showInputError(`O valor mínimo é de ${min} minutos`, "focus");
     timerValue = min;
   }
 
   focusTimeInput.value = timerValue;
   focusTimerValue = timerValue;
-  timer.textContent = `${timerValue}:00`;
+  const formatedTime = generateFormatedTime(timerValue);
+  timer.textContent = formatedTime;
 });
 
 restTimeInput.addEventListener("focusout", () => {
@@ -51,25 +53,29 @@ restTimeInput.addEventListener("focusout", () => {
   }
   123;
   if (timerValue < min) {
-    showInputError(`O valor mínimo é de ${max} minutos`, "rest");
+    showInputError(`O valor mínimo é de ${min} minutos`, "rest");
     timerValue = min;
   }
 
   restTimeInput.value = timerValue;
-  restTimerValue = timerValue;
 });
 
 startButton.addEventListener("click", () => startTimer(focusTimerValue));
 
 function startTimer(durationInMinutes) {
+  if (intervalId !== null) {
+    console.log("Já existe um intervalo rodando!");
+    return;
+  }
+
   const endTime = Date.now() + durationInMinutes * 60000;
-  var counter = setInterval(() => {
+  intervalId = setInterval(() => {
     const remaining = Math.max(0, endTime - Date.now());
     const minutes = Math.floor(remaining / 60000);
     const seconds = Math.floor((remaining % 60000) / 1000);
     if (remaining == 0) {
-      clearInterval(counter);
-      alert("end");
+      clearInterval(intervalId);
+      intervalId = null;
     }
     const formated = generateFormatedTime(minutes, seconds);
     timer.textContent = formated;
@@ -77,8 +83,8 @@ function startTimer(durationInMinutes) {
 }
 
 function generateFormatedTime(minutes, seconds) {
-  if (!minutes) minutes == 0;
-  if (!seconds) seconds == 0;
+  if (!minutes) minutes = 0;
+  if (!seconds) seconds = 0;
   let formatedMinutes = minutes;
   let formatedSeconds = seconds;
 
@@ -92,10 +98,10 @@ function showInputError(message, idSufix) {
   const errorLabel = document.getElementById(`${idSufix}-time-error`);
   console.log(errorLabel);
 
-  if (errorLabel) {
+  if (errorLabel.style.display == "none") {
     errorLabel.textContent = message;
     errorLabel.style.display = "block";
   } else {
-    errorLabel.style.display = "hidden";
+    errorLabel.style.display = "none";
   }
 }
