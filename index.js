@@ -8,6 +8,8 @@ const alternateButton = document.getElementById("alternate");
 let focusTimerValue = 0.1;
 let restTimerValue = 5;
 let intervalId = null;
+let remainingTime = 0;
+let timerState = "stopped";
 
 focusTimeInput.addEventListener("focusout", () => {
   let timerValue = parseInt(focusTimeInput.value, 10);
@@ -51,7 +53,6 @@ restTimeInput.addEventListener("focusout", () => {
     showInputError(`O valor máximo é de ${max} minutos`, "rest");
     timerValue = max;
   }
-  123;
   if (timerValue < min) {
     showInputError(`O valor mínimo é de ${min} minutos`, "rest");
     timerValue = min;
@@ -60,26 +61,49 @@ restTimeInput.addEventListener("focusout", () => {
   restTimeInput.value = timerValue;
 });
 
-startButton.addEventListener("click", () => startTimer(focusTimerValue));
+startButton.addEventListener("click", () => evalTimerState());
 
-function startTimer(durationInMinutes) {
-  if (intervalId !== null) {
-    console.log("Já existe um intervalo rodando!");
-    return;
+resetButton.addEventListener("click", () => resetTimer());
+
+function evalTimerState() {
+  switch (timerState) {
+    case "stopped":
+      startTimer(focusTimerValue);
+      timerState = "running";
+      break;
+    case "running":
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+        intervalId = null;
+        timerState = "paused";
+        return;
+      }
+    case "paused":
+      startTimer(remainingTime / 60000);
+      timerState = "running";
   }
+}
 
-  const endTime = Date.now() + durationInMinutes * 60000;
+function startTimer(time) {
+  const endTime = Date.now() + time * 60000;
   intervalId = setInterval(() => {
-    const remaining = Math.max(0, endTime - Date.now());
-    const minutes = Math.floor(remaining / 60000);
-    const seconds = Math.floor((remaining % 60000) / 1000);
-    if (remaining == 0) {
+    remainingTime = Math.max(0, endTime - Date.now());
+    const minutes = Math.floor(remainingTime / 60000);
+    const seconds = Math.floor((remainingTime % 60000) / 1000);
+    if (remainingTime == 0) {
       clearInterval(intervalId);
       intervalId = null;
+      timerState = "stopped";
     }
     const formated = generateFormatedTime(minutes, seconds);
     timer.textContent = formated;
   }, 1000);
+}
+
+function resetTimer() {
+  clearInterval(intervalId);
+  intervalId = null;
+  timer.innerText = generateFormatedTime(focusTimerValue);
 }
 
 function generateFormatedTime(minutes, seconds) {
