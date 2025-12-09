@@ -86,6 +86,7 @@ function evalTimerState() {
 }
 
 function startTimer(time) {
+  toggleInputDisabled(true);
   const endTime = Date.now() + time * 60000;
   intervalId = setInterval(() => {
     remainingTime = Math.max(0, endTime - Date.now());
@@ -97,6 +98,7 @@ function startTimer(time) {
       timerState = "stopped";
       console.log("finished");
       updateButtonIcon();
+      toggleInputDisabled(false);
     }
     const formated = generateFormatedTime(minutes, seconds);
     timer.textContent = formated;
@@ -105,6 +107,9 @@ function startTimer(time) {
 
 function resetTimer() {
   clearInterval(intervalId);
+  toggleInputDisabled(false);
+  updateButtonIcon();
+  timerState = "stopped";
   intervalId = null;
   timer.innerText = generateFormatedTime(focusTimerValue);
 }
@@ -138,4 +143,9 @@ function updateButtonIcon() {
   const playIcon = document.getElementById("play-button");
   pauseIcon.classList.toggle("hidden");
   playIcon.classList.toggle("hidden");
+}
+
+function toggleInputDisabled(status) {
+  focusTimeInput.disabled = status;
+  restTimeInput.disabled = status;
 }
