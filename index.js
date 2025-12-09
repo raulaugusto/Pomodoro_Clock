@@ -76,12 +76,13 @@ function evalTimerState() {
         clearInterval(intervalId);
         intervalId = null;
         timerState = "paused";
-        return;
       }
+      break;
     case "paused":
       startTimer(remainingTime / 60000);
       timerState = "running";
   }
+  updateButtonIcon();
 }
 
 function startTimer(time) {
@@ -90,10 +91,12 @@ function startTimer(time) {
     remainingTime = Math.max(0, endTime - Date.now());
     const minutes = Math.floor(remainingTime / 60000);
     const seconds = Math.floor((remainingTime % 60000) / 1000);
-    if (remainingTime == 0) {
+    if (remainingTime === 0) {
       clearInterval(intervalId);
       intervalId = null;
       timerState = "stopped";
+      console.log("finished");
+      updateButtonIcon();
     }
     const formated = generateFormatedTime(minutes, seconds);
     timer.textContent = formated;
@@ -128,4 +131,11 @@ function showInputError(message, idSufix) {
   } else {
     errorLabel.style.display = "none";
   }
+}
+
+function updateButtonIcon() {
+  const pauseIcon = document.getElementById("pause-button");
+  const playIcon = document.getElementById("play-button");
+  pauseIcon.classList.toggle("hidden");
+  playIcon.classList.toggle("hidden");
 }

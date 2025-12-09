@@ -141,6 +141,14 @@ body {
   margin-top: 8px;
 }
 
+.icon {
+  display: fixed;
+}
+
+.hidden {
+  display: none;
+}
+
 #config {
   font-weight: 600;
   font-size: 1.25rem;
