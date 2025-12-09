@@ -5,36 +5,64 @@ const startButton = document.getElementById("startTimer");
 const resetButton = document.getElementById("resetTimer");
 const alternateButton = document.getElementById("alternate");
 
-let focusTimerValue = 0.1;
+let focusTimerValue = 25;
 let restTimerValue = 5;
 
 focusTimeInput.addEventListener("focusout", () => {
-  const timerValue = focusTimeInput.value;
-  if (timerValue > 60) {
-    alert("O valor máximo é de 60 minutos");
-    focusTimeInput.value = 60;
-    focusTimerValue = 60;
+  let timerValue = parseInt(focusTimeInput.value, 10);
+
+  const min = 1;
+  const max = 60;
+
+  if (isNaN(timerValue) || timerValue == undefined || timerValue == null) {
+    showInputError("Digite um número válido", "focus");
+    return;
   }
-  timer.textContent = `${timerValue}:00`;
+
+  if (timerValue > max) {
+    showInputError(`O valor máximo é de ${max} minutos`, "focus");
+    timerValue = max;
+  }
+
+  if (timerValue < min) {
+    showInputError(`O valor mínimo é de ${max} minutos`, "focus");
+    timerValue = min;
+  }
+
+  focusTimeInput.value = timerValue;
   focusTimerValue = timerValue;
+  timer.textContent = `${timerValue}:00`;
 });
 
 restTimeInput.addEventListener("focusout", () => {
-  const timerValue = restTimeInput.value;
-  if (timerValue > 60) {
-    alert("O valor máximo é de 60 minutos");
-    restTimeInput.value = 60;
-    restTimerValue = 60;
-  } else {
-    restTimerValue = timerValue;
+  let timerValue = parseInt(restTimeInput.value, 10);
+
+  const min = 1;
+  const max = 60;
+
+  if (isNaN(timerValue) || timerValue == undefined || timerValue == null) {
+    showInputError("Digite um número válido", "rest");
+    return;
   }
+
+  if (timerValue > max) {
+    showInputError(`O valor máximo é de ${max} minutos`, "rest");
+    timerValue = max;
+  }
+  123;
+  if (timerValue < min) {
+    showInputError(`O valor mínimo é de ${max} minutos`, "rest");
+    timerValue = min;
+  }
+
+  restTimeInput.value = timerValue;
+  restTimerValue = timerValue;
 });
 
 startButton.addEventListener("click", () => startTimer(focusTimerValue));
 
 function startTimer(durationInMinutes) {
   const endTime = Date.now() + durationInMinutes * 60000;
-  console.log(endTime);
   var counter = setInterval(() => {
     const remaining = Math.max(0, endTime - Date.now());
     const minutes = Math.floor(remaining / 60000);
@@ -45,7 +73,7 @@ function startTimer(durationInMinutes) {
     }
     const formated = generateFormatedTime(minutes, seconds);
     timer.textContent = formated;
-  }, 100);
+  }, 1000);
 }
 
 function generateFormatedTime(minutes, seconds) {
@@ -58,4 +86,16 @@ function generateFormatedTime(minutes, seconds) {
   if (seconds < 10) formatedSeconds = `0${seconds}`;
 
   return `${formatedMinutes}:${formatedSeconds}`;
+}
+
+function showInputError(message, idSufix) {
+  const errorLabel = document.getElementById(`${idSufix}-time-error`);
+  console.log(errorLabel);
+
+  if (errorLabel) {
+    errorLabel.textContent = message;
+    errorLabel.style.display = "block";
+  } else {
+    errorLabel.style.display = "hidden";
+  }
 }
