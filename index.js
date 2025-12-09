@@ -5,7 +5,7 @@ const startButton = document.getElementById("startTimer");
 const resetButton = document.getElementById("resetTimer");
 const alternateButton = document.getElementById("alternate");
 
-let focusTimerValue = 0.1;
+let focusTimerValue = 25;
 let restTimerValue = 5;
 let intervalId = null;
 let remainingTime = 0;
@@ -66,6 +66,7 @@ function evalTimerState() {
         clearInterval(intervalId);
         intervalId = null;
         timerState = "paused";
+        toggleInputDisabled(false);
       }
       break;
     case "paused":
@@ -83,12 +84,7 @@ function startTimer(time) {
     const minutes = Math.floor(remainingTime / 60000);
     const seconds = Math.floor((remainingTime % 60000) / 1000);
     if (remainingTime === 0) {
-      clearInterval(intervalId);
-      intervalId = null;
-      timerState = "stopped";
-      console.log("finished");
-      updateButtonIcon();
-      toggleInputDisabled(false);
+      finishTimer();
     }
     const formated = generateFormatedTime(minutes, seconds);
     timer.textContent = formated;
@@ -102,6 +98,15 @@ function resetTimer() {
   timerState = "stopped";
   intervalId = null;
   timer.innerText = generateFormatedTime(focusTimerValue);
+}
+
+function finishTimer() {
+  clearInterval(intervalId);
+  intervalId = null;
+  timerState = "stopped";
+  console.log("finished");
+  updateButtonIcon();
+  toggleInputDisabled(false);
 }
 
 function generateFormatedTime(minutes, seconds) {
