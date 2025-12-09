@@ -11,26 +11,31 @@ let intervalId = null;
 let remainingTime = 0;
 let timerState = "stopped";
 
-focusTimeInput.addEventListener("focusout", () => {
-  let timerValue = parseInt(focusTimeInput.value, 10);
-
-  const min = 1;
-  const max = 60;
-
-  if (isNaN(timerValue)) {
+function checkInputValue(value, min, max, idPrefix) {
+  if (isNaN(value)) {
     showInputError("Digite um número válido", "focus");
     return;
   }
 
-  if (timerValue > max) {
-    showInputError(`O valor máximo é de ${max} minutos`, "focus");
-    timerValue = max;
+  if (value > max) {
+    showInputError(`O valor máximo é de ${max} minutos`, idPrefix);
+    value = max;
+    return value;
   }
 
-  if (timerValue < min) {
-    showInputError(`O valor mínimo é de ${min} minutos`, "focus");
-    timerValue = min;
+  if (value < min) {
+    showInputError(`O valor mínimo é de ${min} minutos`, idPrefix);
+    value = min;
+    return value;
   }
+  showInputError("", idPrefix);
+  return value;
+}
+
+focusTimeInput.addEventListener("focusout", () => {
+  let timerValue = parseInt(focusTimeInput.value, 10);
+
+  timerValue = checkInputValue(timerValue, 1, 60, "focus");
 
   focusTimeInput.value = timerValue;
   focusTimerValue = timerValue;
@@ -41,22 +46,7 @@ focusTimeInput.addEventListener("focusout", () => {
 restTimeInput.addEventListener("focusout", () => {
   let timerValue = parseInt(restTimeInput.value, 10);
 
-  const min = 1;
-  const max = 60;
-
-  if (isNaN(timerValue) || timerValue == undefined || timerValue == null) {
-    showInputError("Digite um número válido", "rest");
-    return;
-  }
-
-  if (timerValue > max) {
-    showInputError(`O valor máximo é de ${max} minutos`, "rest");
-    timerValue = max;
-  }
-  if (timerValue < min) {
-    showInputError(`O valor mínimo é de ${min} minutos`, "rest");
-    timerValue = min;
-  }
+  checkInputValue(timerValue, 1, 60, "rest");
 
   restTimeInput.value = timerValue;
 });
@@ -128,7 +118,6 @@ function generateFormatedTime(minutes, seconds) {
 
 function showInputError(message, idSufix) {
   const errorLabel = document.getElementById(`${idSufix}-time-error`);
-  console.log(errorLabel);
 
   if (errorLabel.style.display == "none") {
     errorLabel.textContent = message;
