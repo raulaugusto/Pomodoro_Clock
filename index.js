@@ -50,7 +50,7 @@ focusTimeInput.addEventListener("focusout", () => {
 restTimeInput.addEventListener("focusout", () => {
   let timerValue = parseInt(restTimeInput.value, 10);
 
-  checkInputValue(timerValue, 1, 60, "rest");
+  timerValue = checkInputValue(timerValue, 1, 60, "rest");
 
   restTimeInput.value = timerValue;
   restTimerValue = timerValue;
