@@ -8,7 +8,7 @@ const startButton = document.getElementById("startTimer");
 const resetButton = document.getElementById("resetTimer");
 const alternateButton = document.getElementById("alternate");
 
-let focusTimerValue = 25;
+let focusTimerValue = 0.1;
 let restTimerValue = 5;
 let intervalId = null;
 let remainingTime = 0;
@@ -43,7 +43,7 @@ focusTimeInput.addEventListener("focusout", () => {
 
   focusTimeInput.value = timerValue;
   focusTimerValue = timerValue;
-  const formatedTime = generateFormatedTime(timerValue);
+  const formatedTime = generateFormatedTime(timerValue, 0);
   timer.textContent = formatedTime;
 });
 
@@ -88,6 +88,10 @@ function evalTimerState() {
 }
 
 function startTimer(time) {
+  if (intervalId !== null) {
+    console.warn("Timer já rodando!");
+    return;
+  }
   toggleInputDisabled(true);
   const endTime = Date.now() + time * 60000;
   intervalId = setInterval(() => {
@@ -96,7 +100,15 @@ function startTimer(time) {
     const seconds = Math.floor((remainingTime % 60000) / 1000);
     if (remainingTime === 0) {
       finishTimer();
-      changeMode();
+      if (mode === "focus") {
+        // Terminou foco → Inicia descanso automaticamente
+        changeMode();
+        evalTimerState(); // ✅ Inicia o timer de descanso
+      } else {
+        // Terminou descanso → Para e espera usuário
+        finishTimer();
+      }
+      return; // ✅ Importante: sai do interval
     }
     const formated = generateFormatedTime(minutes, seconds);
     timer.textContent = formated;
@@ -116,9 +128,9 @@ function finishTimer() {
   clearInterval(intervalId);
   intervalId = null;
   timerState = "stopped";
-  console.log("finished");
   updateButtonIcon("play");
   toggleInputDisabled(false);
+  updateTimerStartingValue();
 }
 
 function changeMode() {
@@ -126,7 +138,6 @@ function changeMode() {
   resetTimer();
   updateModeLayout();
   changeBadgeText();
-  updateTimerStartingValue();
 }
 
 function updateModeLayout() {
