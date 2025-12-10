@@ -1,3 +1,4 @@
+/* Genereal config */
 :root {
   --focus-bg: #fbebe9;
   --border-c: #e7e0da;
@@ -31,6 +32,8 @@ body {
   height: 80vh;
   width: 80vw;
 }
+
+/* Timer card styling */
 
 #clock {
   width: 408px;
@@ -101,6 +104,8 @@ body {
   font-family: "JetBrains Mono", monospace;
   font-size: 6rem;
 }
+
+/* Configuration card styling */
 
 #form {
   margin-left: 40px;
