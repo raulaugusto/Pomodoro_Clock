@@ -1,3 +1,6 @@
+const badge = document.getElementById("badge");
+const clockCard = document.getElementById("clock");
+const body = document.querySelector("body");
 const timer = document.getElementById("timer");
 const focusTimeInput = document.getElementById("focus");
 const restTimeInput = document.getElementById("rest");
@@ -10,6 +13,7 @@ let restTimerValue = 5;
 let intervalId = null;
 let remainingTime = 0;
 let timerState = "stopped";
+let mode = "focus";
 
 function checkInputValue(value, min, max, idPrefix) {
   if (isNaN(value)) {
@@ -55,10 +59,16 @@ startButton.addEventListener("click", () => evalTimerState());
 
 resetButton.addEventListener("click", () => resetTimer());
 
+alternateButton.addEventListener("click", () => changeMode());
+
 function evalTimerState() {
   switch (timerState) {
     case "stopped":
-      startTimer(focusTimerValue);
+      if (mode === "focus") {
+        startTimer(focusTimerValue);
+      } else {
+        startTimer(restTimerValue);
+      }
       updateButtonIcon("pause");
       timerState = "running";
       break;
@@ -80,6 +90,7 @@ function evalTimerState() {
 }
 
 function startTimer(time) {
+  console.log(time);
   toggleInputDisabled(true);
   const endTime = Date.now() + time * 60000;
   intervalId = setInterval(() => {
@@ -110,6 +121,38 @@ function finishTimer() {
   console.log("finished");
   updateButtonIcon("play");
   toggleInputDisabled(false);
+}
+
+function changeMode() {
+  mode = "rest";
+  resetTimer();
+  updateModeLayout();
+  changeBadgeText();
+  updateTimerStartingValue();
+}
+
+function updateModeLayout() {
+  const elementsToChange = [badge, startButton, clockCard, body];
+  elementsToChange.forEach((el) => {
+    el.classList.toggle("focus");
+    el.classList.toggle("rest");
+  });
+}
+
+function updateTimerStartingValue() {
+  if (mode === "focus") {
+    timer.innerText = generateFormatedTime(focusTimerValue, 0);
+  } else {
+    timer.innerText = generateFormatedTime(restTimerValue, 0);
+  }
+}
+
+function changeBadgeText() {
+  if (badge.classList.contains("focus")) {
+    badge.innerText = "Foco";
+  } else {
+    badge.innerText = "Descanso";
+  }
 }
 
 function generateFormatedTime(minutes, seconds) {
