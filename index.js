@@ -8,7 +8,7 @@ const startButton = document.getElementById("startTimer");
 const resetButton = document.getElementById("resetTimer");
 const alternateButton = document.getElementById("alternate");
 
-let focusTimerValue = 0.1;
+let focusTimerValue = 25;
 let restTimerValue = 5;
 let intervalId = null;
 let remainingTime = 0;
