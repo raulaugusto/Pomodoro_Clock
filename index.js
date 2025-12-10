@@ -53,6 +53,7 @@ restTimeInput.addEventListener("focusout", () => {
   checkInputValue(timerValue, 1, 60, "rest");
 
   restTimeInput.value = timerValue;
+  restTimerValue = timerValue;
 });
 
 startButton.addEventListener("click", () => evalTimerState());
@@ -124,7 +125,11 @@ function finishTimer() {
 }
 
 function changeMode() {
-  mode = "rest";
+  if (mode == "focus") {
+    mode = "rest";
+  } else {
+    mode = "focus";
+  }
   resetTimer();
   updateModeLayout();
   changeBadgeText();
