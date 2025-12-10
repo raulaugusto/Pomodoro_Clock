@@ -8,7 +8,7 @@ const startButton = document.getElementById("startTimer");
 const resetButton = document.getElementById("resetTimer");
 const alternateButton = document.getElementById("alternate");
 
-let focusTimerValue = 25;
+let focusTimerValue = 0.1;
 let restTimerValue = 5;
 let intervalId = null;
 let remainingTime = 0;
@@ -65,11 +65,8 @@ alternateButton.addEventListener("click", () => changeMode());
 function evalTimerState() {
   switch (timerState) {
     case "stopped":
-      if (mode === "focus") {
-        startTimer(focusTimerValue);
-      } else {
-        startTimer(restTimerValue);
-      }
+      const initialTime = mode === "focus" ? focusTimerValue : restTimerValue;
+      startTimer(initialTime);
       updateButtonIcon("pause");
       timerState = "running";
       break;
@@ -91,7 +88,6 @@ function evalTimerState() {
 }
 
 function startTimer(time) {
-  console.log(time);
   toggleInputDisabled(true);
   const endTime = Date.now() + time * 60000;
   intervalId = setInterval(() => {
@@ -100,6 +96,7 @@ function startTimer(time) {
     const seconds = Math.floor((remainingTime % 60000) / 1000);
     if (remainingTime === 0) {
       finishTimer();
+      changeMode();
     }
     const formated = generateFormatedTime(minutes, seconds);
     timer.textContent = formated;
@@ -112,7 +109,7 @@ function resetTimer() {
   updateButtonIcon("play");
   timerState = "stopped";
   intervalId = null;
-  timer.innerText = generateFormatedTime(focusTimerValue);
+  updateTimerStartingValue();
 }
 
 function finishTimer() {
@@ -125,11 +122,7 @@ function finishTimer() {
 }
 
 function changeMode() {
-  if (mode == "focus") {
-    mode = "rest";
-  } else {
-    mode = "focus";
-  }
+  mode = mode === "focus" ? "rest" : "focus";
   resetTimer();
   updateModeLayout();
   changeBadgeText();
@@ -145,24 +138,17 @@ function updateModeLayout() {
 }
 
 function updateTimerStartingValue() {
-  if (mode === "focus") {
-    timer.innerText = generateFormatedTime(focusTimerValue, 0);
-  } else {
-    timer.innerText = generateFormatedTime(restTimerValue, 0);
-  }
+  const timeToUpdate = mode === "focus" ? focusTimerValue : restTimerValue;
+  timer.innerText = generateFormatedTime(timeToUpdate, 0);
 }
 
 function changeBadgeText() {
-  if (badge.classList.contains("focus")) {
-    badge.innerText = "Foco";
-  } else {
-    badge.innerText = "Descanso";
-  }
+  badge.innerText = badge.classList.contains("focus") ? "Foco" : "Descanso";
 }
 
 function generateFormatedTime(minutes, seconds) {
   if (!minutes) minutes = 0;
-  if (!seconds) seconds = 0;
+  if (!seconds) sseconds = 0;
   let formatedMinutes = minutes;
   let formatedSeconds = seconds;
 
