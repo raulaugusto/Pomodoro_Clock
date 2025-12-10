@@ -8,7 +8,7 @@ const startButton = document.getElementById("startTimer");
 const resetButton = document.getElementById("resetTimer");
 const alternateButton = document.getElementById("alternate");
 
-let focusTimerValue = 0.1;
+let focusTimerValue = 25;
 let restTimerValue = 5;
 let intervalId = null;
 let remainingTime = 0;
@@ -161,11 +161,11 @@ function generateFormatedTime(minutes, seconds) {
 function showInputError(message, idSufix) {
   const errorLabel = document.getElementById(`${idSufix}-time-error`);
 
-  if (errorLabel.style.display == "none") {
+  if (message === "") {
+    errorLabel.style.display = "none";
+  } else {
     errorLabel.textContent = message;
     errorLabel.style.display = "block";
-  } else {
-    errorLabel.style.display = "none";
   }
 }
 
