@@ -101,14 +101,12 @@ function startTimer(time) {
     if (remainingTime === 0) {
       finishTimer();
       if (mode === "focus") {
-        // Terminou foco → Inicia descanso automaticamente
         changeMode();
-        evalTimerState(); // ✅ Inicia o timer de descanso
+        evalTimerState();
       } else {
-        // Terminou descanso → Para e espera usuário
         finishTimer();
       }
-      return; // ✅ Importante: sai do interval
+      return;
     }
     const formated = generateFormatedTime(minutes, seconds);
     timer.textContent = formated;
