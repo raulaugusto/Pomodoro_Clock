@@ -37,6 +37,7 @@ function checkInputValue(value, min, max, idPrefix) {
 }
 
 focusTimeInput.addEventListener("focusout", () => {
+  finishTimer();
   let timerValue = parseInt(focusTimeInput.value, 10);
 
   timerValue = checkInputValue(timerValue, 1, 60, "focus");
@@ -48,12 +49,15 @@ focusTimeInput.addEventListener("focusout", () => {
 });
 
 restTimeInput.addEventListener("focusout", () => {
+  finishTimer();
   let timerValue = parseInt(restTimeInput.value, 10);
 
   timerValue = checkInputValue(timerValue, 1, 60, "rest");
 
   restTimeInput.value = timerValue;
   restTimerValue = timerValue;
+  const formatedTime = generateFormatedTime(timerValue, 0);
+  timer.textContent = formatedTime;
 });
 
 startButton.addEventListener("click", () => evalTimerState());
