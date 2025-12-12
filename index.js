@@ -4,14 +4,17 @@ const body = document.querySelector("body");
 const timer = document.getElementById("timer");
 const focusTimeInput = document.getElementById("focus");
 const restTimeInput = document.getElementById("rest");
+const longRestTimeInput = document.getElementById("long-rest");
 const startButton = document.getElementById("startTimer");
 const resetButton = document.getElementById("resetTimer");
 const alternateButton = document.getElementById("alternate");
 
 let focusTimerValue = 25;
 let restTimerValue = 5;
-let intervalId = null;
+let longRestTimerValue = 30;
 let remainingTime = 0;
+let sessionCounter = 0;
+let intervalId = null;
 let timerState = "stopped";
 let mode = "focus";
 
@@ -37,28 +40,30 @@ function checkInputValue(value, min, max, idPrefix) {
 }
 
 focusTimeInput.addEventListener("focusout", () => {
-  finishTimer();
-  let timerValue = parseInt(focusTimeInput.value, 10);
-
-  timerValue = checkInputValue(timerValue, 1, 60, "focus");
-
-  focusTimeInput.value = timerValue;
-  focusTimerValue = timerValue;
-  const formatedTime = generateFormatedTime(timerValue, 0);
-  timer.textContent = formatedTime;
+  captureOnFocusOut(focusTimeInput, focusTimerValue, "focus");
 });
 
 restTimeInput.addEventListener("focusout", () => {
-  finishTimer();
-  let timerValue = parseInt(restTimeInput.value, 10);
-
-  timerValue = checkInputValue(timerValue, 1, 60, "rest");
-
-  restTimeInput.value = timerValue;
-  restTimerValue = timerValue;
-  const formatedTime = generateFormatedTime(timerValue, 0);
-  timer.textContent = formatedTime;
+  captureOnFocusOut(restTimeInput, restTimerValue, "rest");
 });
+
+longRestTimeInput.addEventListener("focusout", () => {
+  captureOnFocusOut(longRestTimeInput, longRestTimerValue, "long-rest");
+});
+
+function captureOnFocusOut(input, value, idPrefix) {
+  let timerValue = parseInt(input.value, 10);
+
+  timerValue = checkInputValue(timerValue, 1, 60, idPrefix);
+
+  input.value = timerValue;
+  value = timerValue;
+  if (idPrefix === mode) {
+    finishTimer();
+    const formatedTime = generateFormatedTime(timerValue, 0);
+    timer.textContent = formatedTime;
+  }
+}
 
 startButton.addEventListener("click", () => evalTimerState());
 
@@ -69,7 +74,8 @@ alternateButton.addEventListener("click", () => changeMode());
 function evalTimerState() {
   switch (timerState) {
     case "stopped":
-      const initialTime = mode === "focus" ? focusTimerValue : restTimerValue;
+      let initialTime = evalTimeValue();
+
       startTimer(initialTime);
       updateButtonIcon("pause");
       timerState = "running";
@@ -84,10 +90,20 @@ function evalTimerState() {
       }
       break;
     case "paused":
-      startTimer(remainingTime / 60000);
+      startTimer(remainingTime / 600000);
       timerState = "running";
       updateButtonIcon("pause");
       break;
+  }
+}
+
+function evalTimeValue() {
+  if (mode === "focus") {
+    return focusTimerValue;
+  } else if (sessionCounter >= 4) {
+    return longRestTimerValue;
+  } else {
+    return restTimerValue;
   }
 }
 
@@ -97,11 +113,11 @@ function startTimer(time) {
     return;
   }
   toggleInputDisabled(true);
-  const endTime = Date.now() + time * 60000;
+  const endTime = Date.now() + time * 600000;
   intervalId = setInterval(() => {
     remainingTime = Math.max(0, endTime - Date.now());
-    const minutes = Math.floor(remainingTime / 60000);
-    const seconds = Math.floor((remainingTime % 60000) / 1000);
+    const minutes = Math.floor(remainingTime / 600000);
+    const seconds = Math.ceil((remainingTime % 60000) / 1000);
     if (remainingTime === 0) {
       finishTimer();
       if (mode === "focus") {
@@ -127,6 +143,8 @@ function resetTimer() {
 }
 
 function finishTimer() {
+  sessionCounter++;
+  if (sessionCounter > 4) sessionCounter = 0;
   clearInterval(intervalId);
   intervalId = null;
   timerState = "stopped";
@@ -151,7 +169,7 @@ function updateModeLayout() {
 }
 
 function updateTimerStartingValue() {
-  const timeToUpdate = mode === "focus" ? focusTimerValue : restTimerValue;
+  const timeToUpdate = evalTimeValue();
   timer.innerText = generateFormatedTime(timeToUpdate, 0);
 }
 
@@ -200,4 +218,5 @@ function updateButtonIcon(icon) {
 function toggleInputDisabled(status) {
   focusTimeInput.disabled = status;
   restTimeInput.disabled = status;
+  longRestTimeInput.disabled = status;
 }
