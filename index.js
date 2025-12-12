@@ -21,7 +21,7 @@ let mode = "focus";
 function checkInputValue(value, min, max, idPrefix) {
   if (isNaN(value)) {
     showInputError("Digite um número válido", idprefix);
-    return;
+    return 25;
   }
 
   if (value > max) {
