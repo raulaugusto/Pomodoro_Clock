@@ -9,9 +9,9 @@ const startButton = document.getElementById("startTimer");
 const resetButton = document.getElementById("resetTimer");
 const alternateButton = document.getElementById("alternate");
 
-let focusTimerValue = 25;
-let restTimerValue = 5;
-let longRestTimerValue = 30;
+let focusTimerValue = 0;
+let restTimerValue = 0;
+let longRestTimerValue = 1;
 let remainingTime = 0;
 let sessionCounter = 0;
 let intervalId = null;
@@ -40,28 +40,33 @@ function checkInputValue(value, min, max, idPrefix) {
 }
 
 focusTimeInput.addEventListener("focusout", () => {
-  captureOnFocusOut(focusTimeInput, focusTimerValue, "focus");
+  captureOnFocusOut(focusTimeInput, "focus");
 });
 
 restTimeInput.addEventListener("focusout", () => {
-  captureOnFocusOut(restTimeInput, restTimerValue, "rest");
+  captureOnFocusOut(restTimeInput, "rest");
 });
 
 longRestTimeInput.addEventListener("focusout", () => {
-  captureOnFocusOut(longRestTimeInput, longRestTimerValue, "long-rest");
+  captureOnFocusOut(longRestTimeInput, "long-rest");
 });
 
-function captureOnFocusOut(input, value, idPrefix) {
+function captureOnFocusOut(input, idPrefix) {
   let timerValue = parseInt(input.value, 10);
-
   timerValue = checkInputValue(timerValue, 1, 60, idPrefix);
-
   input.value = timerValue;
-  value = timerValue;
+
+  if (idPrefix === "focus") {
+    focusTimerValue = timerValue;
+  } else if (idPrefix === "rest") {
+    restTimerValue = timerValue;
+  } else if (idPrefix === "long-rest") {
+    longRestTimerValue = timerValue;
+  }
+
   if (idPrefix === mode) {
     finishTimer();
-    const formatedTime = generateFormatedTime(timerValue, 0);
-    timer.textContent = formatedTime;
+    timer.textContent = generateFormatedTime(timerValue, 0);
   }
 }
 
@@ -98,9 +103,11 @@ function evalTimerState() {
 }
 
 function evalTimeValue() {
+  console.log(sessionCounter);
   if (mode === "focus") {
     return focusTimerValue;
-  } else if (sessionCounter >= 4) {
+  } else if (sessionCounter === 4) {
+    console.log("long");
     return longRestTimerValue;
   } else {
     return restTimerValue;
@@ -119,12 +126,14 @@ function startTimer(time) {
     const minutes = Math.floor(remainingTime / 600000);
     const seconds = Math.ceil((remainingTime % 60000) / 1000);
     if (remainingTime === 0) {
-      finishTimer();
       if (mode === "focus") {
-        changeMode();
-        evalTimerState();
-      } else {
+        sessionCounter++;
         finishTimer();
+        changeMode();
+        evalTimerState(); // Auto-inicia descanso
+      } else {
+        finishTimer(); // Para no descanso
+        changeMode();
       }
       return;
     }
@@ -143,14 +152,13 @@ function resetTimer() {
 }
 
 function finishTimer() {
-  sessionCounter++;
-  if (sessionCounter > 4) sessionCounter = 0;
   clearInterval(intervalId);
   intervalId = null;
   timerState = "stopped";
   updateButtonIcon("play");
   toggleInputDisabled(false);
   updateTimerStartingValue();
+  if (sessionCounter > 4) sessionCounter = 0; // Reseta após 4 sessões de foco completas
 }
 
 function changeMode() {
