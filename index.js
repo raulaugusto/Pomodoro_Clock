@@ -96,7 +96,7 @@ function evalTimerState() {
       }
       break;
     case "paused":
-      startTimer(remainingTime / 600000);
+      startTimer(remainingTime / 60000);
       timerState = "running";
       updateButtonIcon("pause");
       break;
@@ -118,22 +118,27 @@ function startTimer(time) {
     console.warn("Timer já rodando!");
     return;
   }
-  
+  console.log("remaining time 1: " + time)
+  console.log("remaining time multiplied: " + time * 60000)
   toggleInputDisabled(true);
-  const endTime = Date.now() + time * 600000;
+  const endTime = Date.now() + time * 60000;
+  console.log("endTime: " + endTime)
   progressBar(time)
   intervalId = setInterval(() => {
     remainingTime = Math.max(0, endTime - Date.now());
-    const minutes = Math.floor(remainingTime / 600000);
+    console.log("remaining time 2: " + remainingTime)
+    const minutes = Math.floor(remainingTime / 60000);
     const seconds = Math.ceil((remainingTime % 60000) / 1000);
-    if (remainingTime === 0) {
+    if (remainingTime <= 0) {
       if (mode === "focus") {
         sessionCounter++
         finishTimer();
+        changeMode()
         evalTimerState(); // Auto-inicia descanso
         if(sessionCounter === 4) sessionCounter = 0
       } else {
         finishTimer(); // Para no descanso
+        changeMode()
       }
       return;
     }
@@ -158,7 +163,6 @@ function finishTimer() {
   updateButtonIcon("play");
   toggleInputDisabled(false);
   updateTimerStartingValue();
-  changeMode()
 }
 
 function changeMode() {
@@ -246,7 +250,28 @@ function progressBar(time) {
 }
 
 function getCurrentProgressWidth() {
+  let timeInMinutes = 0;
+  
+  // Pega o tempo total em minutos baseado no modo atual
   switch(mode){
-
+    case "focus":
+      timeInMinutes = focusTimerValue;
+      break; 
+    case "rest":
+      timeInMinutes = restTimerValue;
+      break;
+    case "long-rest":
+      timeInMinutes = longRestTimerValue;
+      break;
   }
+  
+  // Converte o tempo total para milissegundos
+  const totalTimeInMs = timeInMinutes * 60000;
+
+  
+  // Calcula a fração (quanto já passou / total)
+  const fraction = remainingTime / totalTimeInMs;
+  
+  // Retorna a largura proporcional
+  return `${300 * fraction}px`;
 }
