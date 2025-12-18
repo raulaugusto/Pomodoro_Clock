@@ -81,8 +81,9 @@ body.rest {
 #progressFilling {
   height: 15px;
   width: 0;
-  border-radius: 10px;
+  border-radius: 100px;
   background-color: #ef4343;
+  opacity: 60%;
 }
 
 #timerControlButtons {
