@@ -232,3 +232,17 @@ function toggleInputDisabled(status) {
   restTimeInput.disabled = status;
   longRestTimeInput.disabled = status;
 }
+
+function progressBar() {
+  const progressBar = document.getElementById("progessBar");
+  const progressFilling = document.getElementById("progressFilling");
+  let width = 10;
+  progressFilling.style.width = `${width}px`;
+  const progressInterval = setInterval(() => {
+    width++;
+    progressFilling.style.width = `${width}px`;
+    if (width === 300) {
+      clearInterval(progressInterval);
+    }
+  }, 100);
+}
