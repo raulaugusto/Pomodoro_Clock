@@ -205,6 +205,10 @@ function showInputError(message, idSufix) {
   } else {
     errorLabel.textContent = message;
     errorLabel.style.display = "block";
+    setTimeout(() => {
+      errorLabel.style.display = "none";
+      message = "";
+    }, 5000);
   }
 }
 
