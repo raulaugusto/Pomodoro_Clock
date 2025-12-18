@@ -8,6 +8,7 @@ const longRestTimeInput = document.getElementById("long-rest");
 const startButton = document.getElementById("startTimer");
 const resetButton = document.getElementById("resetTimer");
 const alternateButton = document.getElementById("alternate");
+const progressFilling = document.getElementById("progressFilling");
 
 let focusTimerValue = 0;
 let restTimerValue = 0;
@@ -80,7 +81,6 @@ function evalTimerState() {
   switch (timerState) {
     case "stopped":
       let initialTime = evalTimeValue();
-
       startTimer(initialTime);
       updateButtonIcon("pause");
       timerState = "running";
@@ -90,6 +90,7 @@ function evalTimerState() {
         clearInterval(intervalId);
         intervalId = null;
         timerState = "paused";
+        progressFilling.style.width = getCurrentProgressWidth()
         updateButtonIcon("play");
         toggleInputDisabled(false);
       }
@@ -103,11 +104,9 @@ function evalTimerState() {
 }
 
 function evalTimeValue() {
-  console.log(sessionCounter);
   if (mode === "focus") {
     return focusTimerValue;
-  } else if (sessionCounter === 4) {
-    console.log("long");
+  } else if (mode === "long-rest") {
     return longRestTimerValue;
   } else {
     return restTimerValue;
@@ -119,21 +118,22 @@ function startTimer(time) {
     console.warn("Timer já rodando!");
     return;
   }
+  
   toggleInputDisabled(true);
   const endTime = Date.now() + time * 600000;
+  progressBar(time)
   intervalId = setInterval(() => {
     remainingTime = Math.max(0, endTime - Date.now());
     const minutes = Math.floor(remainingTime / 600000);
     const seconds = Math.ceil((remainingTime % 60000) / 1000);
     if (remainingTime === 0) {
       if (mode === "focus") {
-        sessionCounter++;
+        sessionCounter++
         finishTimer();
-        changeMode();
         evalTimerState(); // Auto-inicia descanso
+        if(sessionCounter === 4) sessionCounter = 0
       } else {
         finishTimer(); // Para no descanso
-        changeMode();
       }
       return;
     }
@@ -158,11 +158,16 @@ function finishTimer() {
   updateButtonIcon("play");
   toggleInputDisabled(false);
   updateTimerStartingValue();
-  if (sessionCounter > 4) sessionCounter = 0; // Reseta após 4 sessões de foco completas
+  changeMode()
 }
 
 function changeMode() {
-  mode = mode === "focus" ? "rest" : "focus";
+
+  if(sessionCounter === 4){
+    mode = 'long-rest'
+  }else{
+    mode = mode === "focus" ? "rest" : "focus";
+  }
   resetTimer();
   updateModeLayout();
   changeBadgeText();
@@ -233,10 +238,15 @@ function toggleInputDisabled(status) {
   longRestTimeInput.disabled = status;
 }
 
-function progressBar(minutes, seconds) {
-  const timeInSeconds = minutes * 60 + seconds
-  const progressFilling = document.getElementById("progressFilling");
+function progressBar(time) {
+  const timeInSeconds = time * 60  
   progressFilling.style.transition = `linear ${timeInSeconds}s`
   progressFilling.style.width = '300px';
   progressFilling.style.opacity = "100%";
+}
+
+function getCurrentProgressWidth() {
+  switch(mode){
+
+  }
 }
