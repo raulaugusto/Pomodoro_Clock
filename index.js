@@ -167,7 +167,7 @@ function finishTimer() {
 }
 
 function playSound() {
-  const audio = new Audio("./assets/timeUpSound.mp3");
+  const audio = new Audio("./assets/TimeUpSound.mp3");
   audio.play();
 }
 
